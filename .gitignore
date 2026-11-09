@@ -1,0 +1,7 @@
+# Réglages et notes propres à ma machine (modèle versionné : appareils.exemple.json)
+appareils.json
+NOTES.md
+# Liste de ce qui a déjà été importé
+journal/
+__pycache__/
+.DS_Store

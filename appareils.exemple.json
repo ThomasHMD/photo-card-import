@@ -1,0 +1,16 @@
+{
+  "_lisez_moi": "Copiez ce fichier en appareils.json et adaptez-le. destination : dossier où arrivent les photos (chemin absolu, en ~, ou relatif à ce fichier). vider_la_carte : true = chaque fichier est effacé de la carte une fois sa copie identique vérifiée dans la destination. appareils : la première règle dont la marque ET le modèle EXIF contiennent les textes donnés (sans tenir compte de la casse, \"\" = n'importe lequel) donne le nom du dossier ; appareil inconnu : modèle EXIF sans espaces. depot (facultatif) : dossier intermédiaire, relatif à la racine du disque de la destination. journal (facultatif) : liste de ce qui a déjà été importé.",
+  "destination": "~/Pictures/Import cartes",
+  "vider_la_carte": false,
+  "ejecter_apres_import": true,
+  "notifications": true,
+  "volumes_ignores": ["Macintosh HD", "Recovery"],
+  "appareils": [
+    {"marque": "NIKON", "modele": "D750", "nom": "D750"},
+    {"marque": "RICOH", "modele": "GR", "nom": "RicohGR"},
+    {"marque": "", "modele": "645D", "nom": "Pentax645D"},
+    {"marque": "FUJIFILM", "modele": "X-T4", "nom": "XT4"}
+  ],
+  "extensions_photo": ["3fr", "fff", "nef", "nrw", "pef", "dng", "raf", "arw", "cr2", "cr3", "orf", "rw2", "jpg", "jpeg", "heic", "heif", "hif", "tif", "tiff"],
+  "extensions_video": ["mov", "mp4", "avi", "m4v"]
+}
