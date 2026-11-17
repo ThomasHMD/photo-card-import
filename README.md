@@ -61,6 +61,8 @@ python3 -I import-cartes.py importer --simulation
 | `depot` *(facultatif)* | Le dossier intermédiaire, relatif à la racine du disque de la destination (`.import-cartes-depot` par défaut). Si la destination est sur le disque du Mac : `~/.import-cartes-depot`. |
 | `journal` *(facultatif)* | La liste de ce qui a déjà été importé (`journal/importes.tsv` par défaut). Placée dans un dossier synchronisé, elle est commune à plusieurs Mac. |
 
+Les cartes des consoles (SD de la New 2DS XL, carte R4) sont toujours ignorées, malgré leur dossier `DCIM` : elles portent le repère `.console-2ds` ou `.carte-ds` (14/11/2026, la SD de la 2DS avait été importée et éjectée en pleine pose de mods).
+
 ## Utilisation
 
 Rien à faire : branchez la carte. Le menu de l'icône propose aussi :

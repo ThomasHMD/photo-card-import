@@ -174,6 +174,10 @@ def volumes_cartes() -> list[Path]:
         if nom in ignores or v.is_symlink():
             continue
         try:
+            # Carte d'une console (SD de la New 2DS XL, carte R4) : son DCIM n'est pas une carte photo. Importée et
+            # éjectée en pleine pose des mods le 14/11/2026 ; ces cartes portent le repère de leur script.
+            if any((v / repere).exists() for repere in (".console-2ds", ".carte-ds")):
+                continue
             if (v / "DCIM").is_dir():
                 res.append(v)
         except OSError:
