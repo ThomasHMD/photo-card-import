@@ -1,6 +1,8 @@
+**English** | [Français](README.fr.md)
+
 # photo-card-import
 
-**Je branche la carte de mon appareil photo, et sans aucune manipulation les photos arrivent sur le Mac, rangées par jour de prise de vue et par appareil. Chaque copie est vérifiée à l'octet, puis la carte est vidée et éjectée : il n'y a plus qu'à la retirer.**
+**A macOS tool that imports photos from a camera SD card automatically: I plug in the card, and with no manual step the photos land on my Mac, sorted by shooting day and by camera. Every copy is verified byte for byte, then the card is emptied and ejected: all that is left is to pull it out.**
 
 ```
 Import cartes/
@@ -9,94 +11,94 @@ Import cartes/
   2026-11-09_RicohGR/
 ```
 
-Un petit outil pour Mac : un script Python, et une icône dans la barre des menus grâce à [SwiftBar](https://github.com/swiftbar/SwiftBar). Il marche avec tout ce qui apparaît comme un disque avec un dossier `DCIM` : une carte SD dans le lecteur, ou un appareil branché en USB qui se monte comme un disque.
+A small Mac tool: a Python script, and a menu bar icon thanks to [SwiftBar](https://github.com/swiftbar/SwiftBar). It works with anything that shows up as a disk with a `DCIM` folder: an SD card in the reader, or a camera plugged in over USB that mounts as a disk.
 
-## Ce qu'il fait
+## What it does
 
-- **Il détecte la carte tout seul.** Toutes les 10 secondes, l'icône regarde si un disque avec un `DCIM` vient d'arriver, et lance l'import. Pendant la copie, elle affiche la progression (`37/71`), puis une notification dit ce qui est arrivé et où.
-- **Un dossier par jour et par appareil.** Le jour est celui de la prise de vue (l'horloge de l'appareil, lue dans les métadonnées EXIF). L'appareil est lu dans l'EXIF aussi, jamais dans le nom de la carte : une carte qui passe d'un boîtier à l'autre ne mélange rien. Vous choisissez le nom court de chaque appareil (`D750`, `RicohGR`…).
-- **Une copie vérifiée.** Le fichier lu sur la carte et sa copie relue depuis le disque sont comparés à l'octet près (empreinte BLAKE2). Une copie différente est une erreur, et le fichier est recopié au passage suivant.
-- **Jamais deux fois le même fichier.** Un journal garde la trace de tout ce qui a été importé. Une carte rebranchée sans avoir été vidée ne redonne que les nouvelles photos, même si vous avez déplacé ou trié les dossiers entre-temps. La même photo enregistrée sur les deux cartes d'un boîtier à double emplacement n'est copiée qu'une fois.
-- **Rien n'est jamais écrasé.** Deux photos différentes qui portent le même nom (le compteur de l'appareil est repassé par zéro) donnent `DSC_0001.JPG` et `DSC_0001_2.JPG`.
-- **Pratique avec un dossier synchronisé dans le cloud.** La copie se fait d'abord dans un dossier caché du même disque, puis tout est rangé d'un coup. Le service de synchro ne voit les fichiers qu'à la fin et ne ralentit pas le transfert.
-- **La carte vidée, en option.** Avec `"vider_la_carte": true`, un fichier n'est effacé de la carte que si sa copie identique est dans le dossier de destination **à ce moment-là**. Copie absente (dossier vidé depuis) ou différente : le fichier reste sur la carte. Rien n'est effacé si l'import a été interrompu. Seuls les fichiers photo et vidéo sont effacés, jamais les dossiers ni les fichiers propres à l'appareil. Option désactivée par défaut : chez moi elle est activée.
-- **La carte éjectée** quand tout s'est bien passé. Sinon elle reste branchée, pour qu'on voie le problème dans le menu.
-- **Il vérifie la place** avant de copier (2 Go de marge) et ne fait qu'un import à la fois : une deuxième carte attend son tour.
+- **It detects the card by itself.** Every 10 seconds, the icon checks whether a disk with a `DCIM` has just arrived, and starts the import. During the copy it shows the progress (`37/71`), then a notification says what arrived and where.
+- **One folder per day and per camera.** The day is the shooting day (the camera's clock, read from the EXIF metadata). The camera is also read from the EXIF, never from the card's name: a card moved from one body to another mixes nothing up. You choose the short name of each camera (`D750`, `RicohGR`...).
+- **A verified copy.** The file read from the card and its copy read back from the disk are compared byte for byte (BLAKE2 hash). A different copy is an error, and the file is copied again on the next pass.
+- **Never the same file twice.** A journal keeps track of everything that was imported. A card plugged back in without having been emptied only gives back the new photos, even if you moved or sorted the folders in the meantime. The same photo saved on both cards of a dual-slot body is copied only once.
+- **Nothing is ever overwritten.** Two different photos with the same name (the camera's counter went back to zero) give `DSC_0001.JPG` and `DSC_0001_2.JPG`.
+- **Handy with a folder synced to the cloud.** The copy first goes to a hidden folder on the same disk, then everything is put in place at once. The sync service only sees the files at the end and does not slow the transfer down.
+- **The card emptied, as an option.** With `"vider_la_carte": true`, a file is only erased from the card if its identical copy is in the destination folder **at that moment**. Copy missing (folder emptied since) or different: the file stays on the card. Nothing is erased if the import was interrupted. Only photo and video files are erased, never folders or the camera's own files. The option is off by default: on my machine it is on.
+- **The card ejected** when everything went well. Otherwise it stays plugged in, so the problem shows in the menu.
+- **It checks the free space** before copying (2 GB of margin) and runs only one import at a time: a second card waits its turn.
 
 ## Installation
 
-Il faut un Mac avec :
-- [SwiftBar](https://github.com/swiftbar/SwiftBar) (gratuit) ;
-- `python3` (il vient avec les outils en ligne de commande d'Apple : `xcode-select --install`) ;
-- `exiftool` : `brew install exiftool` avec [Homebrew](https://brew.sh).
+You need a Mac with:
+- [SwiftBar](https://github.com/swiftbar/SwiftBar) (free);
+- `python3` (it comes with Apple's command line tools: `xcode-select --install`);
+- `exiftool`: `brew install exiftool` with [Homebrew](https://brew.sh).
 
-Puis, dans le Terminal :
+Then, in Terminal:
 
 ```bash
 git clone https://github.com/ThomasHMD/photo-card-import.git
 cd photo-card-import
-cp appareils.exemple.json appareils.json      # vos réglages, à adapter
+cp appareils.exemple.json appareils.json      # your settings, to adapt
 ln -s "$PWD/import-cartes.10s.sh" "$(defaults read com.ameba.SwiftBar PluginDirectory)/import-cartes.10s.sh"
 ```
 
-L'icône d'appareil photo apparaît dans la barre des menus. Sans `appareils.json`, l'outil prend les réglages de l'exemple : les photos vont dans `~/Pictures/Import cartes` et la carte n'est pas vidée.
+The camera icon appears in the menu bar. Without `appareils.json`, the tool uses the example's settings: photos go to `~/Pictures/Import cartes` and the card is not emptied.
 
-Avant le premier vrai import, vous pouvez voir ce qui serait copié sans rien toucher :
+Before the first real import, you can see what would be copied without touching anything:
 
 ```bash
 python3 -I import-cartes.py importer --simulation
 ```
 
-## Réglages (`appareils.json`)
+## Settings (`appareils.json`)
 
-| Réglage | Rôle |
+| Setting | Role |
 |---|---|
-| `destination` | Le dossier où arrivent les photos : chemin absolu, en `~`, ou relatif au fichier de réglages. |
-| `vider_la_carte` | `true` : chaque fichier est effacé de la carte une fois sa copie identique vérifiée. |
-| `ejecter_apres_import` | `true` : la carte est éjectée quand tout s'est bien passé. |
-| `notifications` | `false` pour couper les notifications. |
-| `appareils` | Le nom court de chaque appareil. La première règle dont la marque **et** le modèle EXIF contiennent les textes donnés l'emporte (`""` = n'importe lequel). Appareil inconnu : son modèle EXIF, sans les espaces. |
-| `volumes_ignores` | Les disques à ne jamais regarder. |
-| `extensions_photo`, `extensions_video` | Les fichiers copiés. |
-| `depot` *(facultatif)* | Le dossier intermédiaire, relatif à la racine du disque de la destination (`.import-cartes-depot` par défaut). Si la destination est sur le disque du Mac : `~/.import-cartes-depot`. |
-| `journal` *(facultatif)* | La liste de ce qui a déjà été importé (`journal/importes.tsv` par défaut). Placée dans un dossier synchronisé, elle est commune à plusieurs Mac. |
+| `destination` | The folder where the photos arrive: absolute path, with `~`, or relative to the settings file. |
+| `vider_la_carte` | `true`: each file is erased from the card once its identical copy is verified. |
+| `ejecter_apres_import` | `true`: the card is ejected when everything went well. |
+| `notifications` | `false` to turn notifications off. |
+| `appareils` | The short name of each camera. The first rule whose EXIF make **and** model contain the given texts wins (`""` = any). Unknown camera: its EXIF model, without spaces. |
+| `volumes_ignores` | The disks never to look at. |
+| `extensions_photo`, `extensions_video` | The files that get copied. |
+| `depot` *(optional)* | The intermediate folder, relative to the root of the destination's disk (`.import-cartes-depot` by default). If the destination is on the Mac's own disk: `~/.import-cartes-depot`. |
+| `journal` *(optional)* | The list of what has already been imported (`journal/importes.tsv` by default). Placed in a synced folder, it is shared by several Macs. |
 
-Les cartes des consoles (SD de la New 2DS XL, carte R4) sont toujours ignorées, malgré leur dossier `DCIM` : elles portent le repère `.console-2ds` ou `.carte-ds` (14/11/2026, la SD de la 2DS avait été importée et éjectée en pleine pose de mods).
+Game console cards (the New 2DS XL's SD, an R4 card) are always ignored, despite their `DCIM` folder: they carry the `.console-2ds` or `.carte-ds` marker (14/11/2026, the 2DS's SD had been imported and ejected right in the middle of installing mods).
 
-## Utilisation
+## Usage
 
-Rien à faire : branchez la carte. Le menu de l'icône propose aussi :
-- **Cartes branchées** : pour chaque carte, *Importer maintenant* et *Éjecter* ;
-- **Dernier import** : le nombre de fichiers, le volume copié, un lien vers chaque dossier créé, les erreurs éventuelles ;
-- **Tout importer maintenant**, si rien n'est parti tout seul ;
-- **Ouvrir** le dossier de destination, et le **Journal**.
+Nothing to do: plug in the card. The icon's menu also offers:
+- **Cartes branchées** (plugged-in cards): for each card, *Importer maintenant* (import now) and *Éjecter* (eject);
+- **Dernier import** (last import): the number of files, the volume copied, a link to each folder created, any errors;
+- **Tout importer maintenant** (import everything now), if nothing started by itself;
+- **Ouvrir** (open) the destination folder, and the **Journal** (log).
 
-En ligne de commande :
+On the command line:
 
 ```bash
-python3 -I import-cartes.py importer                   # toutes les cartes branchées
+python3 -I import-cartes.py importer                   # every plugged-in card
 python3 -I import-cartes.py importer "/Volumes/NO NAME"
-python3 -I import-cartes.py importer --simulation      # ce qui serait copié, sans rien toucher
+python3 -I import-cartes.py importer --simulation      # what would be copied, touching nothing
 python3 -I import-cartes.py etat
 ```
 
-L'état de chaque Mac (progression, dernier import) est dans `~/Library/Application Support/import-cartes/`, le journal texte dans `~/Library/Logs/import-cartes/import-cartes.log`.
+Each Mac's state (progress, last import) is in `~/Library/Application Support/import-cartes/`, the text log in `~/Library/Logs/import-cartes/import-cartes.log`.
 
-## Limites
+## Limits
 
-- Un appareil branché **par câble** qui ne se monte pas comme un disque (beaucoup de Nikon, qui parlent le protocole PTP) n'est pas vu : passez par un lecteur de cartes.
-- Une vidéo sans métadonnées prend l'appareil le plus fréquent de la carte, et la date du fichier.
-- Carte retirée en pleine copie : ce qui est entièrement copié est rangé, le reste sera copié au prochain branchement.
-- macOS seulement (SwiftBar, notifications, éjection par `diskutil`).
+- A camera plugged in **by cable** that does not mount as a disk (many Nikons, which speak the PTP protocol) is not seen: use a card reader.
+- A video without metadata takes the card's most frequent camera, and the file's date.
+- Card pulled out mid-copy: whatever is entirely copied is put in place, the rest will be copied the next time it is plugged in.
+- macOS only (SwiftBar, notifications, ejection through `diskutil`).
 
 ## Tests
 
-Sur de fausses cartes (de simples dossiers), sans jamais toucher un vrai disque :
+On fake cards (plain folders), never touching a real disk:
 
 ```bash
 python3 tests/test_import.py
 ```
 
-## Licence
+## License
 
-MIT, voir [`LICENSE`](LICENSE).
+MIT, see [`LICENSE`](LICENSE).
